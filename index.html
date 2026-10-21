@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plano de Testes de Homologação - Integração & Logs (HOT x BP WEB x B.HUB)</title>
+
+  <!-- Importando a fonte Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Importando PDF.js para renderização de PDFs anexados -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window['pdfjs-dist/build/pdf']) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
+
+  <style>
+    :root {
+      --primary-color: #e30613;
+      /* HITSS Red */
+      --primary-hover: #b8050e;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-color: #1e293b;
+      --text-secondary: #64748b;
+      --border-color: #e2e8f0;
+      --success-color: #10b981;
+      --danger-color: #ef4444;
+      --warning-color: #f59e0b;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+      --radius: 12px;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border-color: #334155;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Header styling */
+    .header-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--primary-color), #f59e0b);
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .logo-img {
+      max-height: 70px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .theme-toggle-btn {
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theme-toggle-btn:hover {
+      background-color: var(--border-color);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-color);
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+
+    /* Controls bar */
+    .controls-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-color);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      margin-bottom: 30px;
+    }
+
+    .card h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 8px;
+      color: var(--text-color);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--text-secondary);
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="dark"] th {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(0, 0, 0, 0.01);
+    }
+
+    /* Alerts */
+    .alert {
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid var(--warning-color);
+      background-color: rgba(245, 158, 11, 0.06);
+      margin: 15px 0;
+      font-size: 14px;
+    }
+
+    .alert-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--warning-color);
+    }
+
+    /* Two-column layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .scope-box {
+      padding: 20px;
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, 0.01);
+      border: 1px dashed var(--border-color);
+    }
+
+    .scope-box h3 {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .scope-box ul {
+      padding-left: 20px;
+    }
+
+    .scope-box li {
+      margin-bottom: 8px;
+    }
+
+    /* Checkboxes/Interactive Results */
+    .result-selector {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+      background: var(--bg-color);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .result-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .result-option input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary-color);
+    }
+
+    /* Test Case styling */
+    .test-case {
+      border-left: 4px solid var(--primary-color);
+      padding-left: 20px;
+      margin-bottom: 40px;
+    }
+
+    .test-case h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-color);
+    }
+
+    .test-case-detail {
+      margin-bottom: 15px;
+    }
+
+    .test-case-detail h4 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .test-case-detail ul,
+    .test-case-detail ol {
+      padding-left: 20px;
+    }
+
+    .test-case-detail li {
+      margin-bottom: 6px;
+    }
+
+    .evidence-box {
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-top: 10px;
+      background-color: rgba(0, 0, 0, 0.01);
+      cursor: pointer;
+      outline: none;
+      position: relative;
+    }
+
+    .evidence-box:focus {
+      border-color: var(--primary-color);
+      background-color: rgba(227, 6, 19, 0.02);
+    }
+
+    .evidence-box:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    /* Editable Fields */
+    .editable-input {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .editable-textarea {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background-color: white !important;
+        color: black !important;
+        padding: 0 !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .card,
+      .header-card {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin-bottom: 30px !important;
+        background: transparent !important;
+      }
+
+      .header-card::before {
+        display: none;
+      }
+
+      .test-case {
+        page-break-inside: auto !important;
+        break-inside: auto !important;
+        border-left: 2px solid #000;
+        margin-bottom: 30px;
+      }
+
+      table {
+        page-break-inside: auto !important;
+        break-inside: auto !important;
+      }
+
+      th {
+        background-color: #f1f5f9 !important;
+        color: black !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .evidence-section {
+        display: none !important;
+      }
+
+      .evidence-section.has-evidence {
+        display: block !important;
+      }
+
+      .evidence-box {
+        border: 1px solid #cbd5e1 !important;
+        background: transparent !important;
+        max-height: none !important;
+      }
+
+      .evidence-image-container {
+        display: block !important;
+        max-width: 100% !important;
+      }
+
+      .evidence-image-container img {
+        max-height: none !important;
+        width: 100% !important;
+        height: auto !important;
+        display: block !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .evidence-pdf-container {
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+
+      .pdf-pages-container {
+        max-height: none !important;
+        overflow: visible !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+
+      .pdf-pages-container canvas,
+      .pdf-pages-container iframe {
+        max-width: 100% !important;
+        height: auto !important;
+        display: block !important;
+        margin-bottom: 15px !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .result-selector {
+        border: 1px solid #cbd5e1 !important;
+        background: transparent !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: black !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- Controls (No Print) -->
+    <div class="controls-bar no-print">
+      <button class="btn btn-primary" onclick="window.print()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path
+            d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2m-12 0v5h12v-5M9 14h6" />
+        </svg>
+        Imprimir / Salvar como PDF
+      </button>
+      <button class="btn btn-secondary" id="theme-toggle" onclick="toggleTheme()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707.707M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
+        </svg>
+        Alternar Tema
+      </button>
+      <button class="btn btn-secondary" onclick="saveState()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM17 21v-8H7v8M7 3v5h8" />
+        </svg>
+        Salvar Progresso
+      </button>
+    </div>
+
+    <!-- Header -->
+    <div class="header-card">
+      <div class="logo-container">
+        <img src="logo.png" class="logo-img" alt="HITSS Logo" onerror="this.style.display='none'">
+      </div>
+      <h1>PLANO DE TESTES DE HOMOLOGAÇÃO</h1>
+      <div class="subtitle">Fluxo Integrado, Histórico/Logs, Retornos e Exceção - HOT x BP WEB x B.HUB</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 30%">Campo</th>
+            <th>Informação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Projeto</strong></td>
+            <td>HOT x BP WEB x B.HUB (Integração E2E, Logs/Histórico, Retornos e Exceção)</td>
+          </tr>
+          <tr>
+            <td><strong>Ambiente</strong></td>
+            <td>Homologação</td>
+          </tr>
+          <tr>
+            <td><strong>Responsável QA</strong></td>
+            <td>Matheus H Campos</td>
+          </tr>
+          <tr>
+            <td><strong>PO do Projeto</strong></td>
+            <td>Bruna Miguel</td>
+          </tr>
+          <tr>
+            <td><strong>Data Planejada</strong></td>
+            <td>21/10/2026</td>
+          </tr>
+          <tr>
+            <td><strong>Versão do Sistema</strong></td>
+            <td>1.0 (Integração &amp; Auditoria de Histórico)</td>
+          </tr>
+          <tr>
+            <td><strong>Cliente</strong></td>
+            <td>HITSS do Brasil</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Objetivo -->
+    <div class="card">
+      <h2>2. OBJETIVO</h2>
+      <p>Validar junto aos usuários de negócio o fluxo ponta a ponta (E2E) e a <strong>integração completa entre os 3 sistemas (HOT x BP WEB x B.HUB)</strong>, com foco central na <strong>rastreabilidade e gravação de Logs/Histórico cruzado</strong> (garantindo que toda ação executada em um sistema seja devidamente refletida e registrada no histórico dos demais sistemas envolvidos). O plano contempla o <strong>fluxo feliz</strong>, os <strong>fluxos infelizes (retornos e reprovações)</strong> e o <strong>cenário de exceção (Alta por Exceção / Arranque)</strong>, partindo da pré-condição obrigatória de o usuário já possuir uma <strong>Alta sem LPU realizada</strong>.</p>
+
+      <div class="alert">
+        <div class="alert-title">Pré-condição Global Obrigatória:</div>
+        Para iniciar a execução deste plano de testes, o usuário executor <strong>deve possuir obrigatoriamente uma Alta sem LPU já realizada e concluída</strong> previamente no ambiente de homologação.
+      </div>
+    </div>
+
+    <!-- Escopo -->
+    <div class="card">
+      <h2>3. ESCOPO</h2>
+      <div class="grid-2">
+        <div class="scope-box" style="border-left: 4px solid var(--success-color);">
+          <h3 style="color: var(--success-color); font-weight: 700;">Dentro do Escopo</h3>
+          <ul>
+            <li><strong>Pré-condição (Alta sem LPU realizada):</strong> Conferência da alta prévia sem LPU e do histórico base nos 3 sistemas.</li>
+            <li><strong>Logs e Histórico Cruzado (HOT x BP WEB x B.HUB):</strong> Registro de data/hora, usuário, transição de status e justificativa refletido entre os sistemas sem sobrescrita.</li>
+            <li><strong>Fluxo Infeliz (Retornos):</strong> Rejeição pelo Gestor, Reprovação SPE (retorno para <em>Elaborar PT/PC</em>) e Reprovação/Retorno no B.HUB (retorno para <em>Check da Alta</em>).</li>
+            <li><strong>Cenário de Exceção:</strong> Solicitação de Alta por Exceção (Arranque) direcionada à Diretoria de Operações / Presidência e integrada ao B.HUB.</li>
+            <li><strong>Fluxo Feliz Completo:</strong> Checklist 100% no B.HUB, Justificativa, ID Host e Aprovação Final refletida no BP WEB e HOT.</li>
+          </ul>
+        </div>
+        <div class="scope-box" style="border-left: 4px solid var(--text-secondary);">
+          <h3 style="color: var(--text-secondary); font-weight: 700;">Fora do Escopo</h3>
+          <ul>
+            <li>Configurações iniciais de acesso, senhas e autenticação MFA (cobertos no plano de Gestão de Acessos).</li>
+            <li>Fluxos envolvendo tabela de preços unitários / LPU ativa.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Matriz de Rastreabilidade -->
+    <div class="card">
+      <h2>4. MATRIZ DE RASTREABILIDADE</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 22%">Condição de Validação</th>
+            <th style="width: 58%">Descrição</th>
+            <th style="width: 20%">Caso de Teste</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CV-INT-001</strong></td>
+            <td>Validação da Pré-condição (Alta sem LPU já realizada) e Linha de Base do Histórico nos 3 Sistemas</td>
+            <td><span style="font-family: monospace; font-weight: 600;">CT-INT-001</span></td>
+          </tr>
+          <tr>
+            <td><strong>CV-INT-002</strong></td>
+            <td>Criação e Submissão de BP à Demanda e Registro de Log de Submissão (BP WEB x HOT)</td>
+            <td><span style="font-family: monospace; font-weight: 600;">CT-INT-002</span></td>
+          </tr>
+          <tr>
+            <td><strong>CV-INT-003</strong></td>
+            <td>Fluxo Infeliz (Retorno Gestor): Rejeição do BP para Ajuste e Sincronização de Histórico (HOT x BP WEB)</td>
+            <td><span style="font-family: monospace; font-weight: 600;">CT-INT-003</span></td>
+          </tr>
+          <tr>
+            <td><strong>CV-INT-004</strong></td>
+            <td>Fluxo Infeliz (Retorno SPE): Reprovação SPE, Retorno de Fase no HOT/BP WEB e Histórico Cumulativo</td>
+            <td><span style="font-family: monospace; font-weight: 600;">CT-INT-004</span></td>
+          </tr>
+          <tr>
+            <td><strong>CV-INT-005</strong></td>
+            <td>Cenário de Exceção (Alta por Exceção / Arranque): Solicitação e Integração de Log (BP WEB x HOT x B.HUB)</td>
+            <td><span style="font-family: monospace; font-weight: 600;">CT-INT-005</span></td>
+          </tr>
+          <tr>
+            <td><strong>CV-INT-006</strong></td>
+            <td>Fluxo Infeliz no B.HUB (Retorno de Exceção/Alta): Reprovação no B.HUB e Propagação de Histórico para BP WEB e HOT</td>
+            <td><span style="font-family: monospace; font-weight: 600;">CT-INT-006</span></td>
+          </tr>
+          <tr>
+            <td><strong>CV-INT-007</strong></td>
+            <td>Fluxo Feliz Completo: Reenvio, Acionamento do Ponto Focal de Planejamento (PCP) no B.HUB e Aprovação Final Integrada (B.HUB x BP WEB x HOT)</td>
+            <td><span style="font-family: monospace; font-weight: 600;">CT-INT-007</span></td>
+          </tr>
+          <tr>
+            <td><strong>CV-INT-008</strong></td>
+            <td>Auditoria Final Cruzada de Logs e Histórico Completo Ponta a Ponta nos 3 Sistemas (HOT x BP WEB x B.HUB)</td>
+            <td><span style="font-family: monospace; font-weight: 600;">CT-INT-008</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Casos de Teste -->
+    <div class="card">
+      <h2>5. CASOS DE TESTE</h2>
+
+      <!-- CT-INT-001 -->
+      <div class="test-case" id="ct-int-001">
+        <h3>CV-INT-001/CT-INT-001 - Validação da Pré-condição (Alta sem LPU Realizada) e Histórico Base nos 3 Sistemas</h3>
+
+        <div class="test-case-detail">
+          <h4>Objetivo</h4>
+          <p>Confirmar o cumprimento da pré-condição obrigatória (existência de uma Alta sem LPU já realizada pelo usuário) e verificar se os registros de histórico dessa alta prévia estão devidamente consolidados e sincronizados entre <strong>HOT</strong>, <strong>BP WEB</strong> e <strong>B.HUB</strong>.</p>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Pré-condições</h4>
+          <ul>
+            <li>Usuário autenticado nos sistemas <strong>HOT</strong>, <strong>BP WEB</strong> e <strong>B.HUB</strong>.</li>
+            <li>Possuir ao menos uma demanda com <strong>BP sem LPU</strong> cuja <strong>Alta já tenha sido finalizada e aprovada</strong> no B.HUB.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Passos para reproduzir</h4>
+          <ol>
+            <li>Acessar o <strong>B.HUB</strong> e localizar na listagem principal a demanda referente à <strong>Alta sem LPU</strong> já realizada pelo usuário (Status: <code>Aprovado</code>).</li>
+            <li>Abrir o modal da demanda, clicar em <strong>Histórico</strong> e verificar o log de conclusão da alta (<code>Em Andamento -&gt; Aprovado</code>).</li>
+            <li>Acessar o <strong>BP WEB</strong> (<code>Grupo</code>), localizar o BP correspondente e verificar se o status consta como <code>Aprovado</code> e se o <strong>Histórico de Trâmites</strong> registra a aprovação da alta vinda do B.HUB.</li>
+            <li>Acessar o <strong>HOT</strong>, localizar a demanda vinculada e consultar a aba/seção de <strong>Histórico/Logs</strong> para confirmar o registro da conclusão do fluxo.</li>
+          </ol>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Resultado Esperado</h4>
+          <ul>
+            <li>A pré-condição de <strong>Alta sem LPU realizada</strong> é comprovada nos 3 sistemas.</li>
+            <li>O <strong>B.HUB</strong>, o <strong>BP WEB</strong> e o <strong>HOT</strong> exibem status consistentes (<code>Aprovado</code>/concluído) e possuem em seus respectivos históricos o registro íntegro da conclusão da alta anterior.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail evidence-section">
+          <h4>Evidência do Teste (Print da Tela)</h4>
+          <div class="evidence-box">
+            Clique para anexar, arraste uma imagem/PDF ou cole do clipboard (Ctrl+V)
+          </div>
+        </div>
+
+        <div class="test-case-result">
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-001" value="aprovado"> Aprovado
+          </label>
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-001" value="reprovado"> Reprovado
+          </label>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;" class="no-print">
+
+      <!-- CT-INT-002 -->
+      <div class="test-case" id="ct-int-002">
+        <h3>CV-INT-002/CT-INT-002 - Criação e Submissão de BP à Demanda e Registro de Log (BP WEB x HOT)</h3>
+
+        <div class="test-case-detail">
+          <h4>Objetivo</h4>
+          <p>Validar a elaboração e submissão de um Business Plan no <strong>BP WEB</strong> vinculado a uma demanda do <strong>HOT</strong>, garantindo que a ação de submissão altere o status para aprovação do Gestor e registre imediatamente o log/histórico tanto no <strong>BP WEB</strong> quanto na demanda do <strong>HOT</strong>.</p>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Pré-condições</h4>
+          <ul>
+            <li>Pré-condição do <code>CT-INT-001</code> validada (usuário já possui Alta sem LPU realizada).</li>
+            <li>Demanda criada no <strong>HOT</strong> na fase de elaboração/vinculação de BP.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Passos para reproduzir</h4>
+          <ol>
+            <li>Acessar a demanda no <strong>HOT</strong> e iniciar/abrir o BP vinculado no <strong>BP WEB</strong>.</li>
+            <li>Preencher os dados necessários da simulação do BP (recursos, custos, receitas e premissas) mantendo o valor compatível com o Valor da Oportunidade da demanda.</li>
+            <li>Salvar os dados e clicar em <strong>Submeter</strong> o BP à demanda.</li>
+            <li>Verificar se o status do BP mudou para <code>Em Aprovação</code> (Responsável: <code>Gestor</code>).</li>
+            <li>Acessar imediatamente o <strong>Histórico/Log</strong> do BP no <strong>BP WEB</strong> e verificar o registro gerado.</li>
+            <li>Acessar a demanda correspondente no <strong>HOT</strong>, atualizar a tela e consultar o <strong>Histórico/Log</strong> da demanda.</li>
+          </ol>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Resultado Esperado</h4>
+          <ul>
+            <li>O BP é submetido com sucesso e avança para o status <code>Em Aprovação / Gestor</code>.</li>
+            <li><strong>Registro no Histórico (BP WEB):</strong> O sistema grava log detalhado contendo data, hora, usuário responsável, ação de submissão e transição de status.</li>
+            <li><strong>Registro no Histórico (HOT):</strong> A demanda no HOT reflete automaticamente a vinculação/submissão do BP e registra o evento no histórico da demanda.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail evidence-section">
+          <h4>Evidência do Teste (Print da Tela)</h4>
+          <div class="evidence-box">
+            Clique para anexar, arraste uma imagem/PDF ou cole do clipboard (Ctrl+V)
+          </div>
+        </div>
+
+        <div class="test-case-result">
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-002" value="aprovado"> Aprovado
+          </label>
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-002" value="reprovado"> Reprovado
+          </label>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;" class="no-print">
+
+      <!-- CT-INT-003 -->
+      <div class="test-case" id="ct-int-003">
+        <h3>CV-INT-003/CT-INT-003 - Fluxo Infeliz (Retorno Gestor): Rejeição do BP para Ajuste e Sincronização de Histórico (HOT x BP WEB)</h3>
+
+        <div class="test-case-detail">
+          <h4>Objetivo</h4>
+          <p>Garantir que, no <strong>fluxo infeliz (retorno)</strong> quando o <strong>Gestor</strong> rejeita o BP solicitando ajustes, o fluxo retorne ao Elaborador permitindo a edição corretiva e a ação de rejeição + justificativa sejam gravadas no histórico do <strong>HOT</strong> e do <strong>BP WEB</strong>.</p>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Pré-condições</h4>
+          <ul>
+            <li>BP submetido para aprovação com status <code>Em Aprovação</code> (Responsável: <code>Gestor</code>).</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Passos para reproduzir</h4>
+          <ol>
+            <li>Acessar o sistema (<strong>HOT</strong> / <strong>BP WEB</strong>) com o perfil de <strong>Gestor</strong>.</li>
+            <li>Localizar a demanda/BP pendente de aprovação.</li>
+            <li>Clicar em <strong>Rejeitar / Solicitar Ajuste</strong>.</li>
+            <li>Tentar confirmar sem justificativa para validar o bloqueio de obrigatoriedade e, em seguida, preencher uma justificativa detalhada (ex: <em>"Reajustar quantidade de recursos e revisar margem do projeto"</em>).</li>
+            <li>Confirmar a rejeição.</li>
+            <li>Acessar com o perfil do <strong>Elaborador/Editor</strong> no <strong>BP WEB</strong> e verificar o status do BP (<code>Rejeitado</code>), a visibilidade da justificativa e o <strong>Histórico</strong> do BP.</li>
+            <li>Consultar a demanda no <strong>HOT</strong> e verificar se permanece/retorna para a fase de <code>Elaborar/Anexar BP</code> e se o <strong>Histórico</strong> da demanda no HOT registrou a rejeição e a justificativa informada.</li>
+          </ol>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Resultado Esperado</h4>
+          <ul>
+            <li>O sistema exige justificativa obrigatória para efetivar a rejeição/retorno.</li>
+            <li>O status do BP muda para <code>Rejeitado</code>, liberando o botão <strong>Editar</strong> para o Elaborador realizar os ajustes solicitados.</li>
+            <li><strong>Sincronia de Logs (HOT x BP WEB):</strong> Tanto o histórico do <strong>BP WEB</strong> quanto o histórico do <strong>HOT</strong> exibem o registro da rejeição com data/hora, nome do gestor que rejeitou e o texto exato da justificativa.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail evidence-section">
+          <h4>Evidência do Teste (Print da Tela)</h4>
+          <div class="evidence-box">
+            Clique para anexar, arraste uma imagem/PDF ou cole do clipboard (Ctrl+V)
+          </div>
+        </div>
+
+        <div class="test-case-result">
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-003" value="aprovado"> Aprovado
+          </label>
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-003" value="reprovado"> Reprovado
+          </label>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;" class="no-print">
+
+      <!-- CT-INT-004 -->
+      <div class="test-case" id="ct-int-004">
+        <h3>CV-INT-004/CT-INT-004 - Fluxo Infeliz (Retorno SPE): Reprovação pela SPE, Redirecionamento de Fase e Histórico Cumulativo</h3>
+
+        <div class="test-case-detail">
+          <h4>Objetivo</h4>
+          <p>Validar o comportamento de retorno quando a <strong>SPE</strong> reprova a demanda após a aprovação comercial do BP, garantindo que o fluxo retorne para a fase <code>Elaborar PT/PC</code> no <strong>HOT</strong>, permita criar nova versão/ajuste no <strong>BP WEB</strong>, mantenha todo o histórico anterior de forma cumulativa (sem apagar logs prévios) e permita a aprovação após correção.</p>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Pré-condições</h4>
+          <ul>
+            <li>BP reajustado após o <code>CT-INT-003</code>, resubmetido e aprovado pelo Gestor e pelo Cliente.</li>
+            <li>Demanda no <strong>HOT</strong> com status <code>Aguardando Aprovação SPE</code>.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Passos para reproduzir</h4>
+          <ol>
+            <li>Acessar o <strong>HOT</strong> com o perfil de aprovador <strong>SPE</strong>.</li>
+            <li>Localizar a demanda e clicar em <strong>Reprovar</strong>.</li>
+            <li>Informar a justificativa obrigatória da reprovação financeira/técnica (ex: <em>"Necessário ajustar premissa financeira / divergência de dados na validação SPE"</em>) e confirmar.</li>
+            <li>Verificar no <strong>HOT</strong> se o status atualizou para <code>Reprovado SPE</code> e se o fluxo retornou para a etapa <code>Elaborar PT/PC</code>.</li>
+            <li>Acessar o <strong>BP WEB</strong> e verificar se o status reflete o retorno e habilita a criação de nova versão / edição para ajuste das diferenças.</li>
+            <li>Consultar o <strong>Histórico/Logs</strong> no <strong>HOT</strong> e no <strong>BP WEB</strong> para validar que os eventos anteriores (submissão inicial, rejeição do gestor, reenvio) permanecem intactos junto ao novo log de <code>Reprovado SPE</code>.</li>
+            <li>Realizar o ajuste necessário no BP, submeter novamente e concluir as aprovações (Gestor, Cliente e SPE) até que o BP fique com status <strong><code>Aprovado</code> / <code>Pronta para alta</code></strong>.</li>
+          </ol>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Resultado Esperado</h4>
+          <ul>
+            <li>A reprovação pela SPE retorna a demanda para <code>Elaborar PT/PC</code> no HOT e libera o ajuste no BP WEB.</li>
+            <li><strong>Histórico Cumulativo (HOT x BP WEB):</strong> Nenhum log anterior é sobrescrito; o histórico apresenta em ordem cronológica a reprovação da SPE com autor, data/hora e justificativa, seguida pelos novos logs de reenvio e aprovação final.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail evidence-section">
+          <h4>Evidência do Teste (Print da Tela)</h4>
+          <div class="evidence-box">
+            Clique para anexar, arraste uma imagem/PDF ou cole do clipboard (Ctrl+V)
+          </div>
+        </div>
+
+        <div class="test-case-result">
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-004" value="aprovado"> Aprovado
+          </label>
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-004" value="reprovado"> Reprovado
+          </label>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;" class="no-print">
+
+      <!-- CT-INT-005 -->
+      <div class="test-case" id="ct-int-005">
+        <h3>CV-INT-005/CT-INT-005 - Cenário de Exceção (Alta por Exceção / Arranque): Solicitação e Integração de Log (BP WEB x HOT x B.HUB)</h3>
+
+        <div class="test-case-detail">
+          <h4>Objetivo</h4>
+          <p>Validar o <strong>cenário de exceção (Alta por Exceção / Arranque)</strong> para o projeto aprovado quando ainda não há 100% de completude dos pedidos/PO (ou quando acionada a opção de Exceção no Check da Alta), garantindo a correta atribuição de alçada (<strong>Diretoria de Operações</strong> / Carta de Início de Projeto), a integração imediata com o <strong>B.HUB</strong> e o registro de log nos <strong>3 sistemas</strong>.</p>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Pré-condições</h4>
+          <ul>
+            <li>BP com status <code>Aprovado</code> / <code>Pronta para alta</code> no <strong>BP WEB</strong> e demanda aprovada no <strong>HOT</strong>.</li>
+            <li>Cenário parametrizado para <strong>Exceção (Alta por Exceção / Arranque)</strong> no Check da Alta.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Passos para reproduzir</h4>
+          <ol>
+            <li>Acessar o <strong>BP WEB &gt; Grupo</strong> e localizar o BP aprovado.</li>
+            <li>Acionar a opção <strong>Fluxo de Alta / Check da Alta</strong> e selecionar/identificar o cenário de <strong>Alta por Exceção (Arranque)</strong>.</li>
+            <li>Clicar em <strong>Solicitar Alta</strong>, preencher a <strong>justificativa obrigatória de solicitação de exceção</strong> (e dados da Carta de Início de Projeto, se aplicável) e confirmar.</li>
+            <li>Verificar no <strong>BP WEB</strong> a atualização do status para <code>Aguardando Alta</code> / <code>Em aprovação - Exceção de ALTA</code> e se o responsável passa a ser a <strong>Diretoria de Operações</strong> (alçada de exceção).</li>
+            <li>Acessar o <strong>B.HUB</strong> e localizar o registro integrado na fila correspondente (Exceção / Alta), conferindo se todos os dados do projeto foram transportados corretamente.</li>
+            <li>Consultar o <strong>Histórico/Logs</strong> no <strong>BP WEB</strong>, no <strong>HOT</strong> e no <strong>B.HUB</strong>.</li>
+          </ol>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Resultado Esperado</h4>
+          <ul>
+            <li>A solicitação de <strong>Alta por Exceção</strong> é integrada com sucesso ao <strong>B.HUB</strong>, direcionando a responsabilidade para a alçada de <strong>Diretoria de Operações</strong> (e Presidência, conforme fluxo da Carta de Início).</li>
+            <li><strong>Registro nos 3 Sistemas:</strong> O evento de solicitação de Alta por Exceção e sua justificativa ficam registrados e rastreáveis no histórico do <strong>BP WEB</strong>, do <strong>HOT</strong> e do <strong>B.HUB</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail evidence-section">
+          <h4>Evidência do Teste (Print da Tela)</h4>
+          <div class="evidence-box">
+            Clique para anexar, arraste uma imagem/PDF ou cole do clipboard (Ctrl+V)
+          </div>
+        </div>
+
+        <div class="test-case-result">
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-005" value="aprovado"> Aprovado
+          </label>
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-005" value="reprovado"> Reprovado
+          </label>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;" class="no-print">
+
+      <!-- CT-INT-006 -->
+      <div class="test-case" id="ct-int-006">
+        <h3>CV-INT-006/CT-INT-006 - Fluxo Infeliz no B.HUB (Retorno de Exceção/Alta) e Propagação de Histórico para BP WEB e HOT</h3>
+
+        <div class="test-case-detail">
+          <h4>Objetivo</h4>
+          <p>Validar o <strong>fluxo infeliz (retorno) originado no B.HUB</strong>: quando a solicitação de Exceção (Carta de Início) ou Alta sofre reprovação/retorno no <strong>B.HUB</strong>, o fluxo deve retroceder para a etapa de <code>Check da Alta</code> (mantendo o BP como <code>Aprovado</code> sem exigir nova avaliação comercial do BP) e a ação executada no <strong>B.HUB</strong> deve registrar log automaticamente no histórico do <strong>B.HUB</strong>, do <strong>BP WEB</strong> e do <strong>HOT</strong>.</p>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Pré-condições</h4>
+          <ul>
+            <li>Solicitação de Alta / Exceção integrada e ativa no <strong>B.HUB</strong> (proveniente do <code>CT-INT-005</code>).</li>
+            <li>Usuário autenticado com perfil de aprovador/operador no <strong>B.HUB</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Passos para reproduzir</h4>
+          <ol>
+            <li>Acessar o <strong>B.HUB</strong> e abrir a solicitação de Exceção / Alta integrada.</li>
+            <li>Acionar a opção de <strong>Reprovar / Recusar</strong> (retorno do fluxo).</li>
+            <li>Validar que o sistema impede a reprovação sem justificativa.</li>
+            <li>Inserir a justificativa obrigatória de reprovação no <strong>B.HUB</strong> (ex: <em>"Necessário complementar documentação do pedido/Carta antes de prosseguir com a alta"</em>) e clicar em <strong>Confirmar / Submeter</strong>.</li>
+            <li>Verificar no <strong>B.HUB</strong> o <strong>Histórico de Atividades</strong> da demanda.</li>
+            <li>Acessar o <strong>BP WEB</strong> e verificar se o fluxo retrocedeu para permitir novo <strong>Check da Alta / Solicitar Alta</strong> (mantendo o BP como <code>Aprovado</code>) e se o <strong>Histórico</strong> do BP WEB registrou o evento de reprovação enviado pelo B.HUB.</li>
+            <li>Acessar o <strong>HOT</strong> e verificar se o <strong>Histórico</strong> da demanda também registrou o evento de retorno/reprovação originado no B.HUB.</li>
+          </ol>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Resultado Esperado</h4>
+          <ul>
+            <li>O fluxo retrocede corretamente para a etapa de <code>Check da Alta</code>, permitindo ajustes na solicitação sem invalidar a aprovação original do BP (<code>Aprovado</code>).</li>
+            <li><strong>Propagação Reversa de Log (B.HUB -&gt; BP WEB -&gt; HOT):</strong> A reprovação executada dentro do <strong>B.HUB</strong> gera registro automático no Histórico de Atividades do <strong>B.HUB</strong> e propaga o log (com data/hora, autor e justificativa) para o histórico do <strong>BP WEB</strong> e do <strong>HOT</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail evidence-section">
+          <h4>Evidência do Teste (Print da Tela)</h4>
+          <div class="evidence-box">
+            Clique para anexar, arraste uma imagem/PDF ou cole do clipboard (Ctrl+V)
+          </div>
+        </div>
+
+        <div class="test-case-result">
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-006" value="aprovado"> Aprovado
+          </label>
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-006" value="reprovado"> Reprovado
+          </label>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;" class="no-print">
+
+      <!-- CT-INT-007 -->
+      <div class="test-case" id="ct-int-007">
+        <h3>CV-INT-007/CT-INT-007 - Fluxo Feliz Completo: Reenvio, Execução pelo Time de Planejamento (PCP) e Aprovação Final Integrada (B.HUB x BP WEB x HOT)</h3>
+
+        <div class="alert">
+          <div class="alert-title">Orientação Importante — Permissão Exclusiva do Time de Planejamento (PCP):</div>
+          Apenas integrantes do <strong>Time de Planejamento (PCP)</strong> possuem permissão para realizar ações dentro do <strong>B.HUB</strong> (marcar os checkboxes das etapas, preencher a justificativa, informar o ID Host e alterar/submeter a ação). Portanto, o usuário executor deve <strong>entrar em contato com o ponto focal do Time de Planejamento (PCP)</strong> solicitando a execução dessas ações na demanda dentro do B.HUB.
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Objetivo</h4>
+          <p>Validar que, após o tratamento do retorno e reenvio para Alta, o <strong>ponto focal do Time de Planejamento (PCP)</strong> realize as ações operacionais no <strong>B.HUB</strong> (marcação de 100% dos checkboxes do checklist, preenchimento de justificativa, inserção do ID Host e submissão da ação <code>Aprovado</code>), atualizando automaticamente o status e o histórico nos 3 sistemas (<strong>B.HUB</strong>, <strong>BP WEB</strong> e <strong>HOT</strong>).</p>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Pré-condições</h4>
+          <ul>
+            <li>Demanda reenviada para Alta no <strong>B.HUB</strong> (com PO 100% coberta ou Exceção aprovada pelas alçadas).</li>
+            <li>Status da demanda no <strong>B.HUB</strong>: <code>Em Andamento</code> (Avanço <code>0%</code>).</li>
+            <li>Alinhamento com o <strong>ponto focal do Time de Planejamento (PCP)</strong> para atuação na demanda dentro do <strong>B.HUB</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Passos para reproduzir</h4>
+          <ol>
+            <li>No <strong>BP WEB</strong>, realizar o novo envio em <strong>Solicitar Alta</strong> (caso estivesse em <code>Check da Alta</code> após o retorno do <code>CT-INT-006</code>) e confirmar que o status passa para <code>Aguardando Alta</code> (Responsável: <code>PCP</code>).</li>
+            <li><strong>Entrar em contato com o ponto focal do Time de Planejamento (PCP)</strong> informando o ID do BP / ID da Demanda para que ele realize as ações no <strong>B.HUB</strong>:
+              <ul>
+                <li>Acessar o <strong>B.HUB</strong>, localizar a demanda na listagem principal e abrir o modal de edição (Ações).</li>
+                <li>Na seção <strong>ETAPAS</strong>, marcar todas as 4 caixas de seleção (checkboxes) obrigatórias: <strong>Análise Documental</strong>, <strong>Cadastro Comercial</strong>, <strong>Fluxo de Aprovação</strong> e <strong>Alta (Host, SAP, GRL)</strong> <em>(atingindo <strong>100%</strong> em AVANÇO %)</em>.</li>
+                <li>Preencher o campo <strong>Justificativa</strong> (ex: <em>"Alta concluída e validada com sucesso pelo PCP"</em>) e confirmar.</li>
+                <li>Preencher o campo <strong>ID Host</strong> (ex: <code>"1050"</code>) e aguardar a confirmação de salvamento.</li>
+                <li>No dropdown <strong>Ação</strong>, selecionar a opção <strong>Aprovado</strong> e clicar no botão <strong>Submeter &gt;</strong>.</li>
+              </ul>
+            </li>
+            <li>Após a confirmação do ponto focal do <strong>PCP</strong>, acessar o <strong>B.HUB</strong> (modo visualização) e verificar na tabela principal se o status mudou para <code>Aprovado</code> e se a <strong>Data Conclusão Alta</strong> foi preenchida com a data corrente.</li>
+            <li>Acessar o <strong>BP WEB</strong> e o <strong>HOT</strong> para confirmar a atualização final do status do BP e da demanda para <code>Aprovado</code> / concluído.</li>
+          </ol>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Resultado Esperado</h4>
+          <ul>
+            <li>Apenas o perfil do <strong>Time de Planejamento (PCP)</strong> executa a marcação dos checkboxes (<code>100%</code>), o preenchimento da justificativa/ID Host e a submissão da ação no <strong>B.HUB</strong> (enquanto os demais envolvidos possuem acesso restrito à visualização).</li>
+            <li>O status da demanda no <strong>B.HUB</strong> muda para <code>Aprovado</code> com a data de conclusão preenchida.</li>
+            <li>O <strong>BP WEB</strong> e o <strong>HOT</strong> recebem a confirmação da integração e exibem o BP e a demanda como <code>Aprovado</code> / alta concluída.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail evidence-section">
+          <h4>Evidência do Teste (Print da Tela)</h4>
+          <div class="evidence-box">
+            Clique para anexar, arraste uma imagem/PDF ou cole do clipboard (Ctrl+V)
+          </div>
+        </div>
+
+        <div class="test-case-result">
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-007" value="aprovado"> Aprovado
+          </label>
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-007" value="reprovado"> Reprovado
+          </label>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;" class="no-print">
+
+      <!-- CT-INT-008 -->
+      <div class="test-case" id="ct-int-008">
+        <h3>CV-INT-008/CT-INT-008 - Auditoria Final Cruzada de Logs e Histórico Completo Ponta a Ponta nos 3 Sistemas (HOT x BP WEB x B.HUB)</h3>
+
+        <div class="test-case-detail">
+          <h4>Objetivo</h4>
+          <p>Realizar a auditoria final de ponta a ponta nos modais/abas de <strong>Histórico e Logs</strong> dos 3 sistemas (<strong>HOT</strong>, <strong>BP WEB</strong> e <strong>B.HUB</strong>), comprovando que toda a cadeia de eventos executada ao longo do ciclo de vida da demanda (Submissão do BP, Retornos/Rejeições, Exceção, Reenvio e Aprovação Final de Alta) ficou registrada com integridade referencial, ordem cronológica e sem perda de dados.</p>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Pré-condições</h4>
+          <ul>
+            <li>Execução completa dos casos <code>CT-INT-001</code> a <code>CT-INT-007</code>.</li>
+            <li>Demanda finalizada com Alta <code>Aprovada</code>.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Passos para reproduzir</h4>
+          <ol>
+            <li>Acessar o <strong>HOT</strong>, abrir a demanda trabalhada e abrir a seção completa de <strong>Histórico / Logs de Auditoria</strong>.</li>
+            <li>Acessar o <strong>BP WEB</strong>, abrir o BP correspondente e abrir a aba/modal de <strong>Histórico de Trâmites / Logs</strong>.</li>
+            <li>Acessar o <strong>B.HUB</strong>, abrir a alta aprovada e clicar no botão <strong>Histórico</strong> (<code>Histórico de Atividades</code>).</li>
+            <li>Comparar lado a lado os registros gravados nos 3 sistemas, verificando:
+              <ul>
+                <li><strong>Data e Hora (Timestamp)</strong> de cada ação;</li>
+                <li><strong>Usuário Executor / E-mail do responsável</strong>;</li>
+                <li><strong>Tipo de Ação e Transição de Status</strong> (<code>Status Anterior -&gt; Novo Status</code>);</li>
+                <li><strong>Justificativas</strong> inseridas tanto nos fluxos felizes quanto nos fluxos infelizes (retornos) e de exceção;</li>
+                <li>Ausência de sobrescrita (todos os ciclos anteriores devem estar preservados).</li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+
+        <div class="test-case-detail">
+          <h4>Resultado Esperado</h4>
+          <ul>
+            <li><strong>Consistência Total de Logs (HOT x BP WEB x B.HUB):</strong> Todas as ações realizadas em qualquer um dos 3 sistemas estão devidamente espelhadas e registradas no histórico dos outros sistemas conforme a matriz de integração.</li>
+            <li>Todos os registros exibem corretamente data, hora, usuário, transição de status e justificativa, compondo uma trilha de auditoria 100% rastreável do início da demanda até a conclusão da alta.</li>
+          </ul>
+        </div>
+
+        <div class="test-case-detail evidence-section">
+          <h4>Evidência do Teste (Print da Tela)</h4>
+          <div class="evidence-box">
+            Clique para anexar, arraste uma imagem/PDF ou cole do clipboard (Ctrl+V)
+          </div>
+        </div>
+
+        <div class="test-case-result">
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-008" value="aprovado"> Aprovado
+          </label>
+          <label class="result-option">
+            <input type="radio" name="res-ct-int-008" value="reprovado"> Reprovado
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Registro de Melhorias -->
+    <div class="card">
+      <h2>6. REGISTRO DE MELHORIAS</h2>
+      <button class="btn btn-secondary no-print" onclick="addImprovementRow()"
+        style="margin-bottom: 15px; padding: 8px 16px;">+ Adicionar Melhoria</button>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 15%">ID</th>
+            <th style="width: 45%">Descrição</th>
+            <th style="width: 15%">Impacto</th>
+            <th style="width: 15%">Prioridade</th>
+            <th style="width: 10%">Responsável</th>
+          </tr>
+        </thead>
+        <tbody id="improvements-tbody">
+          <tr>
+            <td><input type="text" class="editable-input improvement-id" value="OM-INT-001"></td>
+            <td><input type="text" class="editable-input improvement-desc"
+                placeholder="Descreva a melhoria identificada..."></td>
+            <td><input type="text" class="editable-input improvement-imp" placeholder="Ex: Alto/Médio"></td>
+            <td><input type="text" class="editable-input improvement-prio" placeholder="Ex: Média"></td>
+            <td><input type="text" class="editable-input improvement-resp" placeholder="Nome"></td>
+          </tr>
+          <tr>
+            <td><input type="text" class="editable-input improvement-id" value="OM-INT-002"></td>
+            <td><input type="text" class="editable-input improvement-desc"
+                placeholder="Descreva a melhoria identificada..."></td>
+            <td><input type="text" class="editable-input improvement-imp" placeholder="Ex: Alto/Médio"></td>
+            <td><input type="text" class="editable-input improvement-prio" placeholder="Ex: Média"></td>
+            <td><input type="text" class="editable-input improvement-resp" placeholder="Nome"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Controle de Execução -->
+    <div class="card">
+      <h2>7. CONTROLE DE EXECUÇÃO</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 15%">Caso de Teste</th>
+            <th style="width: 25%">Executor</th>
+            <th style="width: 20%">Data</th>
+            <th style="width: 20%">Resultado</th>
+            <th style="width: 20%">Evidência</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CT-INT-001</strong></td>
+            <td><input type="text" class="editable-input" placeholder="Nome do Executor"></td>
+            <td><input type="date" class="editable-input"></td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Passou">Passou</option>
+                <option value="Falhou">Falhou</option>
+              </select>
+            </td>
+            <td><input type="text" class="editable-input" placeholder="Link/Anexo"></td>
+          </tr>
+          <tr>
+            <td><strong>CT-INT-002</strong></td>
+            <td><input type="text" class="editable-input" placeholder="Nome do Executor"></td>
+            <td><input type="date" class="editable-input"></td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Passou">Passou</option>
+                <option value="Falhou">Falhou</option>
+              </select>
+            </td>
+            <td><input type="text" class="editable-input" placeholder="Link/Anexo"></td>
+          </tr>
+          <tr>
+            <td><strong>CT-INT-003</strong></td>
+            <td><input type="text" class="editable-input" placeholder="Nome do Executor"></td>
+            <td><input type="date" class="editable-input"></td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Passou">Passou</option>
+                <option value="Falhou">Falhou</option>
+              </select>
+            </td>
+            <td><input type="text" class="editable-input" placeholder="Link/Anexo"></td>
+          </tr>
+          <tr>
+            <td><strong>CT-INT-004</strong></td>
+            <td><input type="text" class="editable-input" placeholder="Nome do Executor"></td>
+            <td><input type="date" class="editable-input"></td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Passou">Passou</option>
+                <option value="Falhou">Falhou</option>
+              </select>
+            </td>
+            <td><input type="text" class="editable-input" placeholder="Link/Anexo"></td>
+          </tr>
+          <tr>
+            <td><strong>CT-INT-005</strong></td>
+            <td><input type="text" class="editable-input" placeholder="Nome do Executor"></td>
+            <td><input type="date" class="editable-input"></td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Passou">Passou</option>
+                <option value="Falhou">Falhou</option>
+              </select>
+            </td>
+            <td><input type="text" class="editable-input" placeholder="Link/Anexo"></td>
+          </tr>
+          <tr>
+            <td><strong>CT-INT-006</strong></td>
+            <td><input type="text" class="editable-input" placeholder="Nome do Executor"></td>
+            <td><input type="date" class="editable-input"></td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Passou">Passou</option>
+                <option value="Falhou">Falhou</option>
+              </select>
+            </td>
+            <td><input type="text" class="editable-input" placeholder="Link/Anexo"></td>
+          </tr>
+          <tr>
+            <td><strong>CT-INT-007</strong></td>
+            <td><input type="text" class="editable-input" placeholder="Nome do Executor"></td>
+            <td><input type="date" class="editable-input"></td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Passou">Passou</option>
+                <option value="Falhou">Falhou</option>
+              </select>
+            </td>
+            <td><input type="text" class="editable-input" placeholder="Link/Anexo"></td>
+          </tr>
+          <tr>
+            <td><strong>CT-INT-008</strong></td>
+            <td><input type="text" class="editable-input" placeholder="Nome do Executor"></td>
+            <td><input type="date" class="editable-input"></td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Passou">Passou</option>
+                <option value="Falhou">Falhou</option>
+              </select>
+            </td>
+            <td><input type="text" class="editable-input" placeholder="Link/Anexo"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Critérios de Aceitação -->
+    <div class="card">
+      <h2>8. CRITÉRIOS DE ACEITAÇÃO</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 75%">Critério</th>
+            <th style="width: 25%">Resultado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A pré-condição de possuir uma Alta sem LPU já realizada foi validada nos 3 sistemas (CT-INT-001)</td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>A criação e submissão do BP registra log imediato no BP WEB e reflete no histórico do HOT (CT-INT-002)</td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>No fluxo infeliz (rejeição Gestor), o retorno para edição grava a justificativa e transição no histórico do HOT e BP WEB (CT-INT-003)</td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Na reprovação pela SPE, a demanda retorna para Elaborar PT/PC no HOT, permite ajuste no BP WEB e preserva histórico cumulativo (CT-INT-004)</td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>A solicitação de Alta por Exceção (Arranque) direciona para a alçada correta, integra com o B.HUB e grava log nos 3 sistemas (CT-INT-005)</td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>A reprovação/retorno no B.HUB retrocede para Check da Alta mantendo o BP Aprovado e propaga o log para BP WEB e HOT (CT-INT-006)</td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>O fluxo feliz no B.HUB é executado mediante acionamento do ponto focal do Time de Planejamento (PCP) — único perfil habilitado para marcar checkboxes (100%), preencher justificativa/ID Host e submeter a ação — aprovando a Alta e atualizando o status no BP WEB e HOT (CT-INT-007)</td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>O histórico final cruzado entre HOT, BP WEB e B.HUB apresenta 100% das ações, datas, autores e justificativas sem sobrescrita (CT-INT-008)</td>
+            <td>
+              <select class="editable-input">
+                <option value="">Selecione...</option>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Resumo Executivo -->
+    <div class="card">
+      <h2>9. RESUMO EXECUTIVO DA HOMOLOGAÇÃO</h2>
+
+      <div style="margin-bottom: 20px;">
+        <h3 style="font-size: 15px; margin-bottom: 8px;">Resultado Geral</h3>
+        <div class="result-selector" style="margin-top: 0;">
+          <label class="result-option">
+            <input type="radio" name="resultado-geral" value="aprovado-producao"> Aprovado para Produção
+          </label>
+          <label class="result-option">
+            <input type="radio" name="resultado-geral" value="aprovado-ressalvas"> Aprovado com Ressalvas
+          </label>
+          <label class="result-option">
+            <input type="radio" name="resultado-geral" value="reprovado"> Reprovado
+          </label>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <h3 style="font-size: 15px; margin-bottom: 8px;">Riscos Identificados</h3>
+        <textarea class="editable-textarea" placeholder="Descreva os riscos detectados durante os testes..."></textarea>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <h3 style="font-size: 15px; margin-bottom: 8px;">Pendências</h3>
+        <textarea class="editable-textarea" placeholder="Descreva pendências críticas para correção..."></textarea>
+      </div>
+
+      <div>
+        <h3 style="font-size: 15px; margin-bottom: 8px;">Observações</h3>
+        <textarea class="editable-textarea" placeholder="Observações gerais adicionais..."></textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Script para gerenciar temas
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Carregar tema salvo
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // --- INDEXEDDB PARA ARMAZENAMENTO DE ALTO VOLUME ---
+    const DB_NAME = 'HomologacaoTestDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'test_state';
+    const STATE_KEY = 'homologation_test_state_integracao_logs';
+
+    function getDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = function (e) {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME);
+          }
+        };
+        request.onsuccess = function (e) {
+          resolve(e.target.result);
+        };
+        request.onerror = function (e) {
+          reject(e.target.error);
+        };
+      });
+    }
+
+    function saveToDB(key, val) {
+      return getDB().then(db => {
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE_NAME, 'readwrite');
+          const store = tx.objectStore(STORE_NAME);
+          const req = store.put(val, key);
+          req.onsuccess = () => resolve();
+          req.onerror = () => reject(req.error);
+        });
+      });
+    }
+
+    function getFromDB(key) {
+      return getDB().then(db => {
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE_NAME, 'readonly');
+          const store = tx.objectStore(STORE_NAME);
+          const req = store.get(key);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+      });
+    }
+
+    // --- COMPRESSÃO DE IMAGENS ---
+    function compressImage(file, callback) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          callback(compressedDataUrl);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // --- CONTROLES DE ANEXOS DE IMAGEM/PDF ---
+    document.querySelectorAll('.evidence-box').forEach((box, index) => {
+      box.addEventListener('paste', function (e) {
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        for (let item of items) {
+          if (item.kind === 'file') {
+            const file = item.getAsFile();
+            if (file) {
+              const isPDF = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+              const isImage = file.type.startsWith('image/');
+              if (isImage) {
+                compressImage(file, function (compressedUrl) {
+                  displayImage(box, compressedUrl, file.name);
+                });
+              } else if (isPDF) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                  displayImage(box, event.target.result, file.name);
+                };
+                reader.readAsDataURL(file);
+              }
+            }
+          }
+        }
+      });
+
+      box.addEventListener('dragover', e => {
+        e.preventDefault();
+        box.style.borderColor = 'var(--primary-color)';
+        box.style.backgroundColor = 'rgba(227, 6, 19, 0.02)';
+      });
+
+      box.addEventListener('dragleave', () => {
+        box.style.borderColor = 'var(--border-color)';
+        box.style.backgroundColor = 'rgba(0, 0, 0, 0.01)';
+      });
+
+      box.addEventListener('drop', e => {
+        e.preventDefault();
+        box.style.borderColor = 'var(--border-color)';
+        box.style.backgroundColor = 'rgba(0, 0, 0, 0.01)';
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          const file = files[0];
+          const isPDF = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+          const isImage = file.type.startsWith('image/');
+          if (isImage) {
+            compressImage(file, function (compressedUrl) {
+              displayImage(box, compressedUrl, file.name);
+            });
+          } else if (isPDF) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+              displayImage(box, event.target.result, file.name);
+            };
+            reader.readAsDataURL(file);
+          } else {
+            alert('Por favor, envie um arquivo de imagem ou PDF.');
+          }
+        }
+      });
+
+      box.addEventListener('click', function (e) {
+        if (e.target.tagName === 'BUTTON' || e.target.closest('.evidence-image-container') || e.target.closest('.evidence-pdf-container') || e.target.closest('a')) return;
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*,application/pdf';
+        fileInput.onchange = function () {
+          if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const isPDF = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+            const isImage = file.type.startsWith('image/');
+            if (isImage) {
+              compressImage(file, function (compressedUrl) {
+                displayImage(box, compressedUrl, file.name);
+              });
+            } else if (isPDF) {
+              const reader = new FileReader();
+              reader.onload = function (event) {
+                displayImage(box, event.target.result, file.name);
+              };
+              reader.readAsDataURL(file);
+            }
+          }
+        };
+        fileInput.click();
+      });
+    });
+
+    async function renderPdfPreview(container, src) {
+      const pagesContainer = container.querySelector('.pdf-pages-container');
+      if (!pagesContainer) return;
+
+      try {
+        if (!window['pdfjs-dist/build/pdf'] && !window.pdfjsLib) {
+          throw new Error('PDF.js não carregado');
+        }
+        const pdfjs = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
+        const loadingTask = pdfjs.getDocument(src);
+        const pdf = await loadingTask.promise;
+        pagesContainer.innerHTML = '';
+
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const viewport = page.getViewport({ scale: 1.5 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          canvas.className = 'pdf-page-canvas';
+          canvas.style.maxWidth = '100%';
+          canvas.style.height = 'auto';
+          canvas.style.borderRadius = '4px';
+          canvas.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+
+          await page.render({ canvasContext: context, viewport: viewport }).promise;
+          pagesContainer.appendChild(canvas);
+        }
+      } catch (err) {
+        console.error('Erro ao renderizar PDF via PDF.js:', err);
+        pagesContainer.innerHTML = `<iframe class="pdf-preview" src="${src}" style="width: 100%; height: 350px; border: 1px solid var(--border-color); border-radius: 6px; margin-top: 10px;"></iframe>`;
+      }
+    }
+
+    function displayImage(box, src, fileName = '') {
+      const isPDF = src.startsWith('data:application/pdf') || src.includes('application/pdf') || (fileName && fileName.toLowerCase().endsWith('.pdf'));
+
+      if (isPDF) {
+        const displayName = fileName || 'evidencia.pdf';
+        const containerId = 'pdf-container-' + Math.random().toString(36).substr(2, 9);
+        box.innerHTML = `
+        <div id="${containerId}" class="evidence-pdf-container" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.02); max-width: 100%;">
+          <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              <div style="text-align: left;">
+                <span style="font-weight: 600; font-size: 14px; color: var(--text-color); word-break: break-all;">${displayName}</span>
+                <span style="display: block; font-size: 11px; color: var(--text-secondary);">Arquivo PDF Anexado</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;" class="no-print">
+              <a href="${src}" target="_blank" download="${displayName}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; text-decoration: none;">Visualizar / Baixar PDF</a>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px; border-radius: 6px;" onclick="removeImage(this)">Remover</button>
+            </div>
+          </div>
+          <div class="pdf-pages-container" style="width: 100%; max-height: 500px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; background: #334155; display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 6px;">
+            <span style="color: #f8fafc; font-size: 13px;">Carregando visualização do PDF...</span>
+          </div>
+        </div>
+      `;
+        const pdfContainer = document.getElementById(containerId);
+        if (pdfContainer) {
+          renderPdfPreview(pdfContainer, src);
+        }
+      } else {
+        box.innerHTML = `
+        <div class="evidence-image-container" style="position: relative; display: inline-block; max-width: 100%;">
+          <img src="${src}" style="max-width: 100%; max-height: 450px; border-radius: 8px; border: 1px solid var(--border-color); display: block;" />
+          <button class="btn btn-secondary no-print" style="position: absolute; top: 10px; right: 10px; padding: 6px 12px; background: rgba(255,255,255,0.9); font-size: 11px; border-radius: 6px;" onclick="removeImage(this)">Remover</button>
+        </div>
+      `;
+      }
+      box.setAttribute('data-img-src', src);
+      if (fileName) {
+        box.setAttribute('data-file-name', fileName);
+      } else {
+        box.removeAttribute('data-file-name');
+      }
+      const wrapper = box.closest('.evidence-section');
+      if (wrapper) {
+        wrapper.classList.add('has-evidence');
+      }
+    }
+
+    function removeImage(btn) {
+      const box = btn.closest('.evidence-box');
+      box.innerHTML = 'Clique para anexar, arraste uma imagem/PDF ou cole do clipboard (Ctrl+V)';
+      box.removeAttribute('data-img-src');
+      box.removeAttribute('data-file-name');
+      const wrapper = box.closest('.evidence-section');
+      if (wrapper) {
+        wrapper.classList.remove('has-evidence');
+      }
+    }
+
+    // --- CONTROLE DE MELHORIAS DINÂMICAS ---
+    let improvementCount = 2;
+
+    function addImprovementRow(idVal = '', descVal = '', impVal = '', prioVal = '', respVal = '') {
+      const tbody = document.getElementById('improvements-tbody');
+      improvementCount++;
+      const nextId = idVal || `OM-INT-${String(improvementCount).padStart(3, '0')}`;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+      <td><input type="text" class="editable-input improvement-id" value="${nextId}"></td>
+      <td><input type="text" class="editable-input improvement-desc" value="${descVal}" placeholder="Descreva a melhoria identificada..."></td>
+      <td><input type="text" class="editable-input improvement-imp" value="${impVal}" placeholder="Ex: Alto/Médio"></td>
+      <td><input type="text" class="editable-input improvement-prio" value="${prioVal}" placeholder="Ex: Média"></td>
+      <td><input type="text" class="editable-input improvement-resp" value="${respVal}" placeholder="Nome"></td>
+    `;
+      tbody.appendChild(tr);
+    }
+
+    // --- MONTAGEM DO OBJETO DE ESTADO ---
+    function getStateObj() {
+      const state = {
+        inputs: [],
+        radios: {},
+        improvements: [],
+        images: {},
+        fileNames: {}
+      };
+
+      document.querySelectorAll('.editable-input:not(.improvement-id):not(.improvement-desc):not(.improvement-imp):not(.improvement-prio):not(.improvement-resp), .editable-textarea, select.editable-input').forEach((input, index) => {
+        state.inputs.push({ index, value: input.value });
+      });
+
+      document.querySelectorAll('input[type="radio"]').forEach((radio, index) => {
+        state.radios[radio.name + '_' + radio.value] = radio.checked;
+      });
+
+      document.querySelectorAll('#improvements-tbody tr').forEach((tr) => {
+        state.improvements.push({
+          id: tr.querySelector('.improvement-id').value,
+          desc: tr.querySelector('.improvement-desc').value,
+          imp: tr.querySelector('.improvement-imp').value,
+          prio: tr.querySelector('.improvement-prio').value,
+          resp: tr.querySelector('.improvement-resp').value
+        });
+      });
+
+      document.querySelectorAll('.evidence-box').forEach((box, index) => {
+        const src = box.getAttribute('data-img-src');
+        const name = box.getAttribute('data-file-name');
+        if (src) {
+          state.images[`img_${index}`] = src;
+          if (name) {
+            state.fileNames[`name_${index}`] = name;
+          }
+        }
+      });
+
+      return state;
+    }
+
+    // --- APLICAÇÃO DO ESTADO NA TELA ---
+    function applyState(state) {
+      const tbody = document.getElementById('improvements-tbody');
+      tbody.innerHTML = '';
+      improvementCount = 0;
+
+      const inputs = document.querySelectorAll('.editable-input:not(.improvement-id):not(.improvement-desc):not(.improvement-imp):not(.improvement-prio):not(.improvement-resp), .editable-textarea, select.editable-input');
+      if (state.inputs) {
+        state.inputs.forEach(item => {
+          if (inputs[item.index]) inputs[item.index].value = item.value;
+        });
+      }
+
+      if (state.radios) {
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+          const key = radio.name + '_' + radio.value;
+          if (state.radios[key] !== undefined) {
+            radio.checked = state.radios[key];
+          }
+        });
+      }
+
+      if (state.improvements && state.improvements.length > 0) {
+        state.improvements.forEach(imp => {
+          addImprovementRow(imp.id, imp.desc, imp.imp, imp.prio, imp.resp);
+        });
+      }
+
+      document.querySelectorAll('.evidence-box').forEach((box) => {
+        box.innerHTML = 'Clique para anexar, arraste uma imagem/PDF ou cole do clipboard (Ctrl+V)';
+        box.removeAttribute('data-img-src');
+        box.removeAttribute('data-file-name');
+      });
+
+      document.querySelectorAll('.evidence-section').forEach((wrapper) => {
+        wrapper.classList.remove('has-evidence');
+      });
+
+      if (state.images) {
+        document.querySelectorAll('.evidence-box').forEach((box, index) => {
+          const src = state.images[`img_${index}`];
+          const name = state.fileNames ? state.fileNames[`name_${index}`] : '';
+          if (src) {
+            displayImage(box, src, name);
+          }
+        });
+      }
+    }
+
+    // --- PERSISTÊNCIA DE DADOS ---
+    function saveState() {
+      const state = getStateObj();
+
+      saveToDB(STATE_KEY, state)
+        .then(() => {
+          try {
+            const backupState = JSON.parse(JSON.stringify(state));
+            backupState.images = {};
+            backupState.fileNames = {};
+            localStorage.setItem(STATE_KEY, JSON.stringify(backupState));
+          } catch (e) { }
+          alert('Progresso salvo com sucesso localmente!');
+        })
+        .catch(err => {
+          console.error('Erro ao salvar no IndexedDB:', err);
+          try {
+            localStorage.setItem(STATE_KEY, JSON.stringify(state));
+            alert('Progresso salvo com sucesso localmente (localStorage)!');
+          } catch (e) {
+            if (e.name === 'QuotaExceededError') {
+              alert('Aviso: Limite de armazenamento atingido. O progresso foi salvo, mas algumas evidências são muito grandes. Tente salvar o documento como PDF para não perder seus anexos!');
+            } else {
+              alert('Erro ao salvar progresso: ' + e.message);
+            }
+          }
+        });
+    }
+
+    function loadState() {
+      getFromDB(STATE_KEY)
+        .then(state => {
+          if (state) {
+            applyState(state);
+          } else {
+            loadFromLocalStorage();
+          }
+        })
+        .catch(err => {
+          console.error('Erro ao ler do IndexedDB:', err);
+          loadFromLocalStorage();
+        });
+    }
+
+    function loadFromLocalStorage() {
+      const saved = localStorage.getItem(STATE_KEY);
+      if (!saved) return;
+      try {
+        const state = JSON.parse(saved);
+        applyState(state);
+      } catch (e) {
+        console.error('Erro ao carregar progresso salvo:', e);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadState);
+  </script>
+</body>
+
+</html>
