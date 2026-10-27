@@ -573,7 +573,7 @@
     <!-- Objetivo -->
     <div class="card">
       <h2>2. OBJETIVO</h2>
-      <p>Validar junto aos usuários de negócio o fluxo ponta a ponta (E2E) e a <strong>integração completa entre os 3 sistemas (HOT x BP WEB x B.HUB)</strong>, com foco central na <strong>rastreabilidade e gravação de Logs/Histórico cruzado</strong> (garantindo que toda ação executada em um sistema seja devidamente refletida e registrada no histórico dos demais sistemas envolvidos). O plano contempla o <strong>fluxo feliz</strong>, os <strong>fluxos infelizes (retornos e reprovações)</strong> e o <strong>cenário de exceção (Alta por Exceção / Arranque)</strong>, partindo da pré-condição obrigatória de o usuário já possuir uma <strong>Alta sem LPU realizada</strong>.</p>
+      <p>Validar junto aos usuários de negócio o fluxo ponta a ponta (E2E) e a <strong>integração completa entre os 3 sistemas (HOT x BP WEB x B.HUB)</strong>, com foco central na <strong>rastreabilidade e gravação de Logs/Histórico cruzado</strong> (garantindo que toda ação executada em um sistema seja devidamente refletida e registrada no histórico dos demais sistemas envolvidos). O plano contempla o <strong>fluxo feliz</strong>, os <strong>fluxos de exceção (retornos e reprovações)</strong> e o <strong>cenário de Alta por Exceção (Arranque)</strong>, partindo da pré-condição obrigatória de o usuário já possuir uma <strong>Alta sem LPU realizada</strong>.</p>
 
       <div class="alert">
         <div class="alert-title">Pré-condição Global Obrigatória:</div>
@@ -590,7 +590,7 @@
           <ul>
             <li><strong>Pré-condição (Alta sem LPU realizada):</strong> Conferência da alta prévia sem LPU e do histórico base nos 3 sistemas.</li>
             <li><strong>Logs e Histórico Cruzado (HOT x BP WEB x B.HUB):</strong> Registro de data/hora, usuário, transição de status e justificativa refletido entre os sistemas sem sobrescrita.</li>
-            <li><strong>Fluxo Infeliz (Retornos):</strong> Rejeição pelo Gestor, Reprovação SPE (retorno para <em>Elaborar PT/PC</em>) e Reprovação/Retorno no B.HUB (retorno para <em>Check da Alta</em>).</li>
+            <li><strong>Fluxo de Exceção (Retornos):</strong> Rejeição pelo Gestor, Reprovação SPE (retorno para <em>Elaborar PT/PC</em>) e Reprovação/Retorno no B.HUB (retorno para <em>Check da Alta</em>).</li>
             <li><strong>Cenário de Exceção:</strong> Solicitação de Alta por Exceção (Arranque) direcionada à Diretoria de Operações / Presidência e integrada ao B.HUB.</li>
             <li><strong>Fluxo Feliz Completo:</strong> Checklist 100% no B.HUB, Justificativa, ID Host e Aprovação Final refletida no BP WEB e HOT.</li>
           </ul>
@@ -629,12 +629,12 @@
           </tr>
           <tr>
             <td><strong>CV-INT-003</strong></td>
-            <td>Fluxo Infeliz (Retorno Gestor): Rejeição do BP para Ajuste e Sincronização de Histórico (HOT x BP WEB)</td>
+            <td>Fluxo de Exceção (Retorno Gestor): Rejeição do BP para Ajuste e Sincronização de Histórico (HOT x BP WEB)</td>
             <td><span style="font-family: monospace; font-weight: 600;">CT-INT-003</span></td>
           </tr>
           <tr>
             <td><strong>CV-INT-004</strong></td>
-            <td>Fluxo Infeliz (Retorno SPE): Reprovação SPE, Retorno de Fase no HOT/BP WEB e Histórico Cumulativo</td>
+            <td>Fluxo de Exceção (Retorno SPE): Reprovação SPE, Retorno de Fase no HOT/BP WEB e Histórico Cumulativo</td>
             <td><span style="font-family: monospace; font-weight: 600;">CT-INT-004</span></td>
           </tr>
           <tr>
@@ -644,7 +644,7 @@
           </tr>
           <tr>
             <td><strong>CV-INT-006</strong></td>
-            <td>Fluxo Infeliz no B.HUB (Retorno de Exceção/Alta): Reprovação no B.HUB e Propagação de Histórico para BP WEB e HOT</td>
+            <td>Fluxo de Exceção no B.HUB (Retorno de Exceção/Alta): Reprovação no B.HUB e Propagação de Histórico para BP WEB e HOT</td>
             <td><span style="font-family: monospace; font-weight: 600;">CT-INT-006</span></td>
           </tr>
           <tr>
@@ -778,11 +778,11 @@
 
       <!-- CT-INT-003 -->
       <div class="test-case" id="ct-int-003">
-        <h3>CV-INT-003/CT-INT-003 - Fluxo Infeliz (Retorno Gestor): Rejeição do BP para Ajuste e Sincronização de Histórico (HOT x BP WEB)</h3>
+        <h3>CV-INT-003/CT-INT-003 - Fluxo de Exceção (Retorno Gestor): Rejeição do BP para Ajuste e Sincronização de Histórico (HOT x BP WEB)</h3>
 
         <div class="test-case-detail">
           <h4>Objetivo</h4>
-          <p>Garantir que, no <strong>fluxo infeliz (retorno)</strong> quando o <strong>Gestor</strong> rejeita o BP solicitando ajustes, o fluxo retorne ao Elaborador permitindo a edição corretiva e a ação de rejeição + justificativa sejam gravadas no histórico do <strong>HOT</strong> e do <strong>BP WEB</strong>.</p>
+          <p>Garantir que, no <strong>fluxo de exceção (retorno)</strong> quando o <strong>Gestor</strong> rejeita o BP solicitando ajustes, o fluxo retorne ao Elaborador permitindo a edição corretiva e a ação de rejeição + justificativa sejam gravadas no histórico do <strong>HOT</strong> e do <strong>BP WEB</strong>.</p>
         </div>
 
         <div class="test-case-detail">
@@ -835,7 +835,7 @@
 
       <!-- CT-INT-004 -->
       <div class="test-case" id="ct-int-004">
-        <h3>CV-INT-004/CT-INT-004 - Fluxo Infeliz (Retorno SPE): Reprovação pela SPE, Redirecionamento de Fase e Histórico Cumulativo</h3>
+        <h3>CV-INT-004/CT-INT-004 - Fluxo de Exceção (Retorno SPE): Reprovação pela SPE, Redirecionamento de Fase e Histórico Cumulativo</h3>
 
         <div class="test-case-detail">
           <h4>Objetivo</h4>
@@ -948,11 +948,11 @@
 
       <!-- CT-INT-006 -->
       <div class="test-case" id="ct-int-006">
-        <h3>CV-INT-006/CT-INT-006 - Fluxo Infeliz no B.HUB (Retorno de Exceção/Alta) e Propagação de Histórico para BP WEB e HOT</h3>
+        <h3>CV-INT-006/CT-INT-006 - Fluxo de Exceção no B.HUB (Retorno de Exceção/Alta) e Propagação de Histórico para BP WEB e HOT</h3>
 
         <div class="test-case-detail">
           <h4>Objetivo</h4>
-          <p>Validar o <strong>fluxo infeliz (retorno) originado no B.HUB</strong>: quando a solicitação de Exceção (Carta de Início) ou Alta sofre reprovação/retorno no <strong>B.HUB</strong>, o fluxo deve retroceder para a etapa de <code>Check da Alta</code> (mantendo o BP como <code>Aprovado</code> sem exigir nova avaliação comercial do BP) e a ação executada no <strong>B.HUB</strong> deve registrar log automaticamente no histórico do <strong>B.HUB</strong>, do <strong>BP WEB</strong> e do <strong>HOT</strong>.</p>
+          <p>Validar o <strong>fluxo de exceção (retorno) originado no B.HUB</strong>: quando a solicitação de Exceção (Carta de Início) ou Alta sofre reprovação/retorno no <strong>B.HUB</strong>, o fluxo deve retroceder para a etapa de <code>Check da Alta</code> (mantendo o BP como <code>Aprovado</code> sem exigir nova avaliação comercial do BP) e a ação executada no <strong>B.HUB</strong> deve registrar log automaticamente no histórico do <strong>B.HUB</strong>, do <strong>BP WEB</strong> e do <strong>HOT</strong>.</p>
         </div>
 
         <div class="test-case-detail">
@@ -1100,7 +1100,7 @@
                 <li><strong>Data e Hora (Timestamp)</strong> de cada ação;</li>
                 <li><strong>Usuário Executor / E-mail do responsável</strong>;</li>
                 <li><strong>Tipo de Ação e Transição de Status</strong> (<code>Status Anterior -&gt; Novo Status</code>);</li>
-                <li><strong>Justificativas</strong> inseridas tanto nos fluxos felizes quanto nos fluxos infelizes (retornos) e de exceção;</li>
+                <li><strong>Justificativas</strong> inseridas tanto nos fluxos felizes quanto nos fluxos de exceção (retornos) e de Alta por Exceção;</li>
                 <li>Ausência de sobrescrita (todos os ciclos anteriores devem estar preservados).</li>
               </ul>
             </li>
@@ -1324,7 +1324,7 @@
             </td>
           </tr>
           <tr>
-            <td>No fluxo infeliz (rejeição Gestor), o retorno para edição grava a justificativa e transição no histórico do HOT e BP WEB (CT-INT-003)</td>
+            <td>No fluxo de exceção (rejeição Gestor), o retorno para edição grava a justificativa e transição no histórico do HOT e BP WEB (CT-INT-003)</td>
             <td>
               <select class="editable-input">
                 <option value="">Selecione...</option>
